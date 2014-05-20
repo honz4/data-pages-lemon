@@ -1,72 +1,64 @@
 # Version
-VERSION = 0.0.1
+VERSION = 1.2014.5
+
+ifeq (0,1)
+this Makefile require GNU make!
+TODO: zkusit antimake?
+endif
 
 # Compiler flags
-CFLAGS = -Wall -W -O2 -s -pipe
+CFLAGS = -W -O2 -s -pipe
+CFLAGS += -Wall
+
 CLMFLAGS = -Wall -W -O2 -s -pipe -lm
 LFLAGS =  -O2 -s -pipe
 
-all: lemon example1 exp1 example2 exp2 example3 exp3 example4 exp4 lexer example5 exp5 dcalc
+examples = $(addprefix example,1 2 3 4 5)
 
-exp1: example1.c 
-	cat main_part >> example1.c
-	g++ -o ex1 $(LFLAGS)  $<
+default : example5
 
-example1: example1.y lemon
-	  ./lemon example1.y
+all : $(examples)
 
-exp2: example2.c 
-	cat main_part2 >> example2.c
-	g++ -o ex2 $(LFLAGS)  $<
-
-example2: example2.y lemon
-	  ./lemon example2.y
+lemon : lemon.c
+	$(CC) $(CFLAGS) -o $@ lemon.c
 
 
-exp3: example3.c 
-	cat main_part3 >> example3.c
-	g++ -o ex3 $(LFLAGS)  $<
+example%.c : lemon
 
-example3: example3.y lemon
-	  ./lemon example3.y
+$(addsuffix .y,$(examples)) : lemon
 
+%.c : %.y
+	  ./lemon $<
 
-exp4: example4.c 
-	cat main_part4 >> example4.c
-	g++ -o ex4 $(LFLAGS)  $<
+example1_SRC = example1.c example1_main.c
+example1 : $(example1_SRC)
+	$(CC) $(CFLAGS) -o $@ $(LFLAGS) $@.c $@_main.c && ./$@
 
-example4: example4.y lemon
-	  ./lemon example4.y
+example2_SRC = example2.c example2_main.c
+example2 : $(example2_SRC)
+	$(CC) $(CFLAGS) -o $@ $(LFLAGS) $@.c $@_main.c && ./$@
 
+example3_SRC = example3.c example3_main.c
+example3 : $(example3_SRC)
+	$(CC) $(CFLAGS) -o $@ $($@_SRC) && ./$@
 
-exp5: example5.c lexer
-	cat main_part5 >> example5.c
-	g++ -o ex5 -O2 -s -pipe  example5.c lexer.o -lm
-
-lexer: lexer.l lexglobal.h example5
-	flex lexer.l
-	test -e lex.yy.c && mv lex.yy.c lexer.c
-	gcc -o lexer.o -c lexer.c 
+example4_SRC = example4.c example4_main.c
+example4 : $(example4_SRC)
+	$(CC) $(CFLAGS) -o $@ $($@_SRC) && ./$@
 
 
-example5: example5.y lemon
-	  ./lemon example5.y
+example5_SRC = example5.c example5_main.c lexer5.c
+example5 : $(example5_SRC)
+	$(CC) $(CFLAGS) -o $@ $($@_SRC) && ./$@
 
+lexer5.c : lexer.l lexglobal.h
+	flex lexer.l && mv lex.yy.c lexer5.c
 
-lemon: lemon.c
-	  gcc -o $@ $(LFLAGS)  $<
 
 dcalc: desktop_calc.cc
 	  g++ -o $@ $(CLMFLAGS)  $<
 
-
-
-
-
-
-
-
 clean:	
-	rm  -f  ex1 example1.c example1.h example2.h ex2 example2.c example2.h ex3 example3.c example3.h ex4 example4.c example4.h ex5 example5.c example5.h lexer.c  lemon dcalc a.out *.out
+	rm  -f  -- example?.[ch] lexer.c *.o lemon $(examples) dcalc a.out *.out
 
-
+FORCE :: ;

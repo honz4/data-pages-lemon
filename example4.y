@@ -1,25 +1,18 @@
 /* Copyright (GPL) 2004 mchirico@users.sourceforge.net or mchirico@comcast.net
   Simple lemon parser  example.
-
-  
-    $ ./lemon example2.y                          
-
-  
-
 */
 
 %include {   
-#include <iostream>  
+#include <stdio.h>  
+#include <assert.h>  
 #include "ex4def.h"
 #include "example4.h"
 
-
   void token_destructor(Token t)
     {
-      std::cout << "In token_destructor t.value= " << t.value << std::endl;
-      std::cout << "In token_destructor t.n= " << t.n << std::endl;
+      printf("In token_destructor t.value=%d\n", t.value);
+      printf("In token_destructor t.n=%u\n", t.n);
     }
-
 
 }  
 
@@ -43,45 +36,38 @@
 
    
 %syntax_error {  
-  std::cout << "Syntax error!" << std::endl;  
+  printf("Syntax error!\n");
 }   
    
 /*  This is to terminate with a new line */
 main ::= in.
-in ::= .
-in ::= in state NEWLINE.
+  in ::= .
+  in ::= in state NEWLINE.
 
+state ::= expr(A).   { printf("Result.value=%d\n", A.value);
+                       printf("Result.n=%u\n", A.n);
+}  
 
-
-state ::= expr(A).   { 
-                        std::cout << "Result.value=" << A.value << std::endl; 
-                        std::cout << "Result.n=" << A.n << std::endl; 
-
-                         }  
-
-
-
-expr(A) ::= expr(B) MINUS  expr(C).   { A.value = B.value - C.value; 
+expr(A) ::= expr(B) MINUS  expr(C).  { A.value = B.value - C.value; 
                                        A.n = B.n+1  + C.n+1;
-                                      }  
+}  
 
 expr(A) ::= expr(B) PLUS  expr(C).   { A.value = B.value + C.value; 
                                        A.n = B.n+1  + C.n+1;
-                                      }  
+}  
 
 expr(A) ::= expr(B) TIMES  expr(C).   { A.value = B.value * C.value;
                                         A.n = B.n+1  + C.n+1;
+}  
 
-                                         }  
 expr(A) ::= expr(B) DIVIDE expr(C).  { 
 
          if(C.value != 0){
            A.value = B.value / C.value;
            A.n = B.n+1 + C.n+1;
-          }else{
-           std::cout << "divide by zero" << std::endl;
-           }
+         }else{
+           printf("divide by zero\n");
+         }
 }  /* end of DIVIDE */
+
 expr(A) ::= NUM(B). { A.value = B.value; A.n = B.n+1; }
-
-

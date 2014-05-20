@@ -1,0 +1,4 @@
+======lemon todo======
+  * vyčístit c compiler warning? něco je možná na github
+  * vrátit původní příklady C++ jako *.cpp???
+  * příklad na [[c:ragel]] lexer?
