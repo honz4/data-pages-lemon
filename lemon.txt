@@ -642,6 +642,13 @@ For example:
 
 This might be needed, for example, if some of the C actions in the
 grammar call functions that are prototyed in unistd.h.
+====%ifdef directive====
+====%ifndef directive====
+====%endif directive====
+
+====%fallback directive====
+====%wildcadr directive====
+??? in 2014-may sqlite/src/parse.y
 
 ====%left directive====
 
@@ -817,9 +824,11 @@ to cause Lemon to produce these symbols instead:
     #define TOKEN_OR         3
     #define TOKEN_PLUS       4
 </code>
+====%token_class====
 
-====%token_type====
-====%type directives====
+
+====%token_type directive====
+====%type directive====
 
 These directives are used to specify the data types for values
 on the parser's stack associated with terminal and non-terminal
