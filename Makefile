@@ -60,5 +60,11 @@ dcalc: desktop_calc.cc
 
 clean:	
 	rm  -f  -- example?.[ch] lexer.c *.o lemon $(examples) dcalc a.out *.out
+	rm -f -- *.[ch].txt c2dw
+
+ch.txt : $(addsuffix .txt,$(wildcard *.[ch]))
+%.c.txt : %.c ; ./c2dw $< > $@
+%.h.txt : %.h ; ./c2dw $< > $@
+
 
 FORCE :: ;
